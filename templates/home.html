@@ -12,13 +12,10 @@
 
     <script>
         function iniciarContador(isoDate) {
-            // Pega o tempo em milissegundos para evitar erros de fuso horário
             const tempoCarregamento = new Date(isoDate).getTime();
 
             function atualizarContador() {
                 const agora = new Date().getTime();
-
-                // Calcula a diferença
                 const diffEmSegundos = Math.floor((agora - tempoCarregamento) / 1000);
                 const minPassados = Math.floor(diffEmSegundos / 60);
 
@@ -31,20 +28,14 @@
                 } else {
                     texto = `That was ${minPassados} minutes ago.`;
                 }
-
-                // Atualiza o texto na tela
                 const elemento = document.getElementById("contador-tempo");
                 if (elemento) {
                     elemento.innerText = texto;
                 }
             }
-
-            // Roda a primeira vez e depois a cada 3 segundos
             atualizarContador();
             setInterval(atualizarContador, 3000);
         }
-
-        // Executa a função passando a data do Flask
         iniciarContador("{{ iso_date }}");
     </script>
 {% endblock %}

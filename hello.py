@@ -6,11 +6,10 @@ FUSO_BRASILIA = timezone(timedelta(hours=-3))
 app = Flask(__name__, static_folder='templates/static')
 @app.route('/')
 def index():
-    caminho_arquivo = __file__
-    timestamp_mod = os.path.getmtime(caminho_arquivo)
-    data_modificacao = datetime.fromtimestamp(timestamp_mod, tz=timezone.utc).astimezone(FUSO_BRASILIA)
-    data_formatada = data_modificacao.strftime('%m/%d/%Y às %H:%M')
-    iso_date = data_modificacao.isoformat()
+    agora = datetime.now(FUSO_BRASILIA)
+    data_formatada = agora.strftime('%B %d, %Y às %H:%M:%S')
+    iso_date = agora.isoformat()
+
     return render_template("home.html", ultima_atualizacao=data_formatada, iso_date=iso_date)
 
 @app.route('/identificacao/<nome>/<protuario>/<instituicao>')

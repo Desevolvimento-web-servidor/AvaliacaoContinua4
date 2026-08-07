@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+    <div class='countainer'>
+        <h1>Dados da última atualização:</h1>
+
+        <p>The local date and time is {{ ultima_atualizacao }}.</p>
+
+        <p>That was 0 minutes ago.</p>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Flasky{% endblock %}</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/icon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header class='cabecalho'>
+        <ul>
+            <li><a href="/">Avaliação continua:<strong> Aula 040</strong></a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="{{url_for('identificacao', nome='Vinicius Ruza', protuario='PT3035921', instituicao='IFSP')}}">Identificação</a></li>
+            <li><a href="{{url_for('contextorequisicao', nome='Vinicius Ruza')}}">Contexto da requisição</a></li>
+        </ul>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

@@ -7,8 +7,44 @@
 
         <p>The local date and time is {{ ultima_atualizacao }}.</p>
 
-        <p>That was 0 minutes ago.</p>
+        <p id="contador-tempo">That was in a few seconds.</p>
     </div>
 
-    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    <script>
+        function iniciarContador(isoDate) {
+            // Pega o tempo em milissegundos para evitar erros de fuso horário
+            const tempoCarregamento = new Date(isoDate).getTime();
+
+            function atualizarContador() {
+                const agora = new Date().getTime();
+
+                // Calcula a diferença
+                const diffEmSegundos = Math.floor((agora - tempoCarregamento) / 1000);
+                const minPassados = Math.floor(diffEmSegundos / 60);
+
+                let texto = "";
+
+                if (minPassados < 1) {
+                    texto = "That was a few seconds ago.";
+                } else if (minPassados === 1) {
+                    texto = "That was 1 minute ago.";
+                } else {
+                    texto = `That was ${minPassados} minutes ago.`;
+                }
+
+                // Atualiza o texto na tela
+                const elemento = document.getElementById("contador-tempo");
+                if (elemento) {
+                    elemento.innerText = texto;
+                }
+            }
+
+            // Roda a primeira vez e depois a cada 3 segundos
+            atualizarContador();
+            setInterval(atualizarContador, 3000);
+        }
+
+        // Executa a função passando a data do Flask
+        iniciarContador("{{ iso_date }}");
+    </script>
 {% endblock %}

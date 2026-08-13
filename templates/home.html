@@ -1,14 +1,10 @@
 {% extends 'base.html' %}
+{% import "bootstrap/wtf.html" as wtf %}
 
-
-{% block content %}
-    <div class='countainer'>
-        <h1>Dados da última atualização:</h1>
-
-        <p>The local date and time is {{ ultima_atualizacao }}.</p>
-
-        <p>That was 0 minutes ago.</p>
+{% block page_content %}
+    <div class='container'>
+        <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
     </div>
-
-    <script src="{{ url_for('static', filename='js/home.js') }}"></script>
+    
+    {{ wtf.quick_form(form) }}
 {% endblock %}

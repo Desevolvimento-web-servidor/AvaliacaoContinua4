@@ -1,13 +1,22 @@
 function iniciarContador(isoDate) {
-    const dataModificacao = new Date(isoDate);
+    console.log("Data recebida do Flask:", isoDate);
+    
+    // Converte a data ISO para milissegundos
+    const tempoCarregamento = new Date(isoDate).getTime();
 
     function atualizarContador() {
-        const agora = new Date();
-        const minPassados = Math.floor((agora - dataModificacao) / (1000 * 60));
+        const agora = new Date().getTime();
+        
+        // Diferença em segundos e minutos
+        const diffEmSegundos = Math.floor((agora - tempoCarregamento) / 1000);
+        const minPassados = Math.floor(diffEmSegundos / 60);
+
+        console.log("Segundos passados:", diffEmSegundos);
 
         let texto = "";
+        
         if (minPassados < 1) {
-            texto = "That was 0 minutes ago.";
+            texto = "That was a few seconds ago.";
         } else if (minPassados === 1) {
             texto = "That was 1 minute ago.";
         } else {
@@ -20,6 +29,9 @@ function iniciarContador(isoDate) {
         }
     }
 
+    // Executa imediatamente na primeira vez
     atualizarContador();
-    setInterval(atualizarContador, 30000);
+    
+    // Atualiza a cada 3 segundos
+    setInterval(atualizarContador, 3000);
 }

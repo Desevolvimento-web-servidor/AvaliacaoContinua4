@@ -1,16 +1,36 @@
-import os
-from datetime import datetime, timezone, timedelta
-from flask import Flask, request, redirect,abort, render_template
+from flask import Flask, request, redirect,abort, render_template, session, url_for, flash
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired
+from flask_moment import Moment
+from flask_bootstrap import Bootstrap
 
-FUSO_BRASILIA = timezone(timedelta(hours=-3))
 app = Flask(__name__, static_folder='templates/static')
-@app.route('/')
+moment=Moment(app)
+bootstrap = Bootstrap(app)
+app.config['SECRET_KEY']='Chave Forte'
+
+class NameForms(FlaskForm):
+    name=StringField('What is your name?', validators=[DataRequired()])
+    submit=SubmitField('Submit')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+<<<<<<< HEAD
     agora = datetime.now(FUSO_BRASILIA)
     data_formatada = agora.strftime('%B %d, %Y às %H:%M:%S')
     iso_date = agora.isoformat()
 
     return render_template("home.html", ultima_atualizacao=data_formatada, iso_date=iso_date)
+=======
+    form=NameForms()
+    if form.validate_on_submit():
+        old_name = session.get('name')
+        if old_name is not None and old_name != form.name.data:
+            flash('Looks like you have changed your name!')
+        session['name'] = form.name.data
+        return redirect(url_for('index'))
+    return render_template('home.html', form=form, name=session.get('name'))
+>>>>>>> 6bd7df5 (Tarefa de formulários)
 
 @app.route('/identificacao/<nome>/<protuario>/<instituicao>')
 def identificacao(nome, protuario, instituicao):

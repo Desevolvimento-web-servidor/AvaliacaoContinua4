@@ -1,54 +1,16 @@
-<<<<<<< HEAD
-{% extends 'base.html' %}
-
-
-{% block content %}
-    <div class='countainer'>
-        <h1>Dados da última atualização:</h1>
-
-        <p>The local date and time is {{ ultima_atualizacao }}.</p>
-
-        <p id="contador-tempo">That was in a few seconds.</p>
-    </div>
-
-    <script>
-        function iniciarContador(isoDate) {
-            const tempoCarregamento = new Date(isoDate).getTime();
-
-            function atualizarContador() {
-                const agora = new Date().getTime();
-                const diffEmSegundos = Math.floor((agora - tempoCarregamento) / 1000);
-                const minPassados = Math.floor(diffEmSegundos / 60);
-
-                let texto = "";
-
-                if (minPassados < 1) {
-                    texto = "That was a few seconds ago.";
-                } else if (minPassados === 1) {
-                    texto = "That was 1 minute ago.";
-                } else {
-                    texto = `That was ${minPassados} minutes ago.`;
-                }
-                const elemento = document.getElementById("contador-tempo");
-                if (elemento) {
-                    elemento.innerText = texto;
-                }
-            }
-            atualizarContador();
-            setInterval(atualizarContador, 3000);
-        }
-        iniciarContador("{{ iso_date }}");
-    </script>
-{% endblock %}
-=======
 {% extends 'base.html' %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
     <div class='container'>
-        <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1>
+        <h1>Olá, {% if name %}{{ name }} {{sobrenome}}{% else %}Estranho{% endif %}!</h1>
+        <h2>Sua instituicao de ensino é {{instituicao}}</h2>
+        <h2>Está cursando a disciplina de {{disciplina}}</h2>
+        <p>O IP do computador remoto é: {% if ip_computador %}{{ip_computador}} {% else %} None {% endif %}</p>
+        <p>O host da aplicação é: {{host_atual}}</p>
     </div>
-    
+
     {{ wtf.quick_form(form) }}
+    <p>The local date and time is {{ moment(current_time).format('LLL') }}.</p>
+    <p>That was {{ moment(current_time).fromNow(refresh=True) }}.</p>
 {% endblock %}
->>>>>>> 6bd7df5 (Tarefa de formulários)

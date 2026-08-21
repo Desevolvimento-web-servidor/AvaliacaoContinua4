@@ -1,6 +1,7 @@
+from datetime import datetime
 from flask import Flask, request, redirect,abort, render_template, session, url_for, flash
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SubmitField, SelectField, PasswordField
 from wtforms.validators import DataRequired
 from flask_moment import Moment
 from flask_bootstrap import Bootstrap
@@ -10,51 +11,63 @@ moment=Moment(app)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY']='Chave Forte'
 
-class NameForms(FlaskForm):
-    name=StringField('What is your name?', validators=[DataRequired()])
-    submit=SubmitField('Submit')
+class CadastroForm(FlaskForm):
+    name = StringField('Informe o seu nome', validators=[DataRequired()])
+    sobrenome = StringField('Informe o seu sobrenome', validators=[DataRequired()])
+    instituicao = StringField('Informe a sua instituição de ensino', validators=[DataRequired()])
+    disciplina = SelectField('Informe a sua disciplina', choices=[('DSWA5', 'DSWA5'), ('DSWA4', 'DSWA4'), ('Gestão de projetos', 'Gestão de projetos')], validators=[DataRequired()])
+    submit = SubmitField('Submit')
+class LoginForm(FlaskForm):
+    nome = StringField('Nome ou e-mail', validators=[DataRequired()])
+    senha = PasswordField('Informe a sua senha', validators=[DataRequired()])
+    enviar = SubmitField('Enviar')
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-<<<<<<< HEAD
-    agora = datetime.now(FUSO_BRASILIA)
-    data_formatada = agora.strftime('%B %d, %Y às %H:%M:%S')
-    iso_date = agora.isoformat()
+    form = CadastroForm()
 
-    return render_template("home.html", ultima_atualizacao=data_formatada, iso_date=iso_date)
-=======
-    form=NameForms()
     if form.validate_on_submit():
         old_name = session.get('name')
         if old_name is not None and old_name != form.name.data:
-            flash('Looks like you have changed your name!')
-        session['name'] = form.name.data
-        return redirect(url_for('index'))
-    return render_template('home.html', form=form, name=session.get('name'))
->>>>>>> 6bd7df5 (Tarefa de formulários)
+            flash('Você alterou o seu nome!')
 
+        session['name'] = form.name.data
+        session['sobrenome'] = form.sobrenome.data
+        session['instituicao'] = form.instituicao.data
+        session['disciplina'] = form.disciplina.data
+        session['ip_computador'] = request.remote_addr
+        session['host_atual'] = request.host
+
+        return redirect(url_for('index'))
+
+    return render_template(
+        'home.html',
+        current_time=datetime.utcnow(),
+        form=form,
+        # Puxa direto da session (se não houver, fica None)
+        ip_computador=session.get('ip_computador'),
+        host_atual=session.get('host_atual'),
+        name=session.get('name'),
+        sobrenome=session.get('sobrenome'),
+        instituicao=session.get('instituicao'),
+        disciplina=session.get('disciplina')
+    )
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        session['nome']=form.nome.data
+        return redirect(url_for('sucesso'))
+    return render_template('login.html', current_time=datetime.utcnow(), form=form)
+@app.route('/sucesso')
+def sucesso():
+    nome=session.get('nome')
+    return render_template('sucesso.html', nome=nome, current_time=datetime.utcnow())
 @app.route('/identificacao/<nome>/<protuario>/<instituicao>')
 def identificacao(nome, protuario, instituicao):
     return render_template("identificacao.html", nome=nome, protuario=protuario, instituicao=instituicao)
 
-
-@app.route('/contextorequisicao/<nome>')
-def contextorequisicao(nome):
-    user_agent = request.headers.get('User-Agent')
-    ip_computador=request.remote_addr
-    host_atual=request.host
-    return render_template("requisicao.html",nome=nome, user_agent=user_agent, ip_computador=ip_computador, host_atual=host_atual)
-
-@app.route('/codigostatusdiferente')
-def codigostatusdiferente():
-    return '<p>Bad request</p>';
-
-@app.route('/objetoresposta')
-def objetoresposta():
-    return '<h1>This document carries a cookie!</h1>'
-
-@app.route('/redirecionamento')
-def redirecionamento():
-    return redirect("https://ptb.ifsp.edu.br/")
 
 @app.route('/abortar')
 def abortar():
